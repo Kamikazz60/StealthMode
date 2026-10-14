@@ -1,0 +1,14 @@
+bin/
+obj/
+dist/
+.vs/
+*.user
+*.zip
+
+# Données personnelles de l'utilisateur (profils, réglages, journaux) : ne jamais publier
+StealthModeData/
+audio-pending.json
+hidden-state.json
+
+# Image source de l'icône (l'icône finale est dans src/StealthMode.App/Resources)
+ange demon.jpg

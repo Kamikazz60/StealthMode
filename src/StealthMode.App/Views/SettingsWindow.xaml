@@ -1,0 +1,62 @@
+<Window x:Class="StealthMode.App.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Paramètres" Width="520" Height="640" MinWidth="380" MinHeight="460"
+        Background="{StaticResource Bg}" WindowStartupLocation="CenterOwner" FontFamily="Segoe UI">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="Paramètres" FontSize="20" FontWeight="SemiBold"/>
+
+            <TextBlock Text="Raccourcis globaux" FontWeight="SemiBold" Margin="0,16,0,4"/>
+            <TextBlock Foreground="{StaticResource FgDim}" FontSize="12" TextWrapping="Wrap"
+                       Text="Cliquez dans le champ puis appuyez sur la combinaison voulue. Sur certains portables (Surface), les touches F nécessitent la touche Fn."/>
+            <CheckBox Content="Un seul raccourci : il active le mode secret, puis le désactive" IsChecked="{Binding SingleHotkeyToggle}" Margin="0,10,0,0"/>
+            <TextBlock Text="{Binding ActivateLabel}" Margin="0,10,0,4"/>
+            <TextBox x:Name="ActivateBox" IsReadOnly="True" Text="{Binding ActivateText, Mode=OneWay}" PreviewKeyDown="Hotkey_PreviewKeyDown" Tag="activate"/>
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SeparateHotkeys}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <TextBlock Text="Restaurer les fenêtres" Margin="0,10,0,4"/>
+                <TextBox x:Name="RestoreBox" IsReadOnly="True" Text="{Binding RestoreText, Mode=OneWay}" PreviewKeyDown="Hotkey_PreviewKeyDown" Tag="restore"/>
+            </StackPanel>
+            <Button Content="Rétablir les raccourcis par défaut" Command="{Binding ResetHotkeysCommand}" Style="{StaticResource SecondaryButton}"
+                    HorizontalAlignment="Left" Margin="0,10,0,0"/>
+
+            <TextBlock Text="Application" FontWeight="SemiBold" Margin="0,22,0,6"/>
+            <CheckBox Content="Couper le son des applications masquées" IsChecked="{Binding MuteHiddenApps}" Margin="0,4"/>
+            <TextBlock Foreground="{StaticResource FgDim}" FontSize="12" TextWrapping="Wrap" Margin="24,0,0,4"
+                       Text="Tout le son de l'application est coupé (par exemple Brave ou Chrome), même si une autre de ses fenêtres reste visible. Il est rétabli à la restauration."/>
+            <CheckBox Content="Démarrer avec Windows" IsChecked="{Binding StartWithWindows}" IsEnabled="{Binding AutostartAvailable}" Margin="0,4"/>
+            <TextBlock Foreground="{StaticResource FgDim}" FontSize="12" TextWrapping="Wrap" Margin="24,0,0,4"
+                       Text="Indisponible en mode portable (le démarrage pointerait vers la clé USB)."
+                       Visibility="{Binding PortableMode, Converter={StaticResource BoolToVis}}"/>
+            <CheckBox Content="Mode portable : garder mes profils et réglages à côté du programme (clé USB)" IsChecked="{Binding PortableMode}" Margin="0,4"/>
+            <TextBlock Foreground="{StaticResource FgDim}" FontSize="12" TextWrapping="Wrap" Margin="24,0,0,4"
+                       Text="Vos profils et réglages sont enregistrés dans le dossier « StealthModeData » à côté de StealthMode.exe : lancez le programme depuis une clé USB et vos règles (par exemple « masquer Chrome ») vous suivent sur n'importe quel ordinateur. L'application redémarre pour appliquer le changement."/>
+            <TextBlock Foreground="{StaticResource FgDim}" FontSize="12" TextWrapping="Wrap" Margin="24,0,0,4">
+                <Run Text="Données actuelles : "/><Run Text="{Binding DataLocation, Mode=OneWay}"/>
+            </TextBlock>
+            <CheckBox Content="Réduire dans la zone de notification à la fermeture (sinon la croix quitte l'application)" IsChecked="{Binding MinimizeToTray}" Margin="0,4"/>
+            <CheckBox Content="Masquer l'icône de notification pendant le mode secret" IsChecked="{Binding HideTrayIconInSecretMode}" Margin="0,4"/>
+            <TextBlock Foreground="{StaticResource FgDim}" FontSize="12" TextWrapping="Wrap" Margin="24,0,0,4"
+                       Text="Appliqué seulement si le raccourci de restauration est actif : l'icône reste visible sinon, pour garder un moyen de restaurer."/>
+            <CheckBox Content="Réafficher cette fenêtre après la restauration" IsChecked="{Binding ShowMainWindowAfterRestore}" Margin="0,4"/>
+            <TextBlock Foreground="{StaticResource FgDim}" FontSize="12" TextWrapping="Wrap" Margin="24,0,0,4"
+                       Text="Elle revient comme n'importe quelle fenêtre : réduite si elle l'était, sans passer au premier plan. Si elle était déjà dans la zone de notification, elle y reste. Décochée, elle reste dans la zone de notification."/>
+
+            <TextBlock Text="{Binding Message}" Foreground="{StaticResource Danger}" TextWrapping="Wrap" Margin="0,16,0,0"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+                <Button Content="Annuler" Style="{StaticResource SecondaryButton}" IsCancel="True" Margin="0,0,8,0"/>
+                <Button Content="Enregistrer" Style="{StaticResource PrimaryButton}" Click="Save_Click" MinWidth="110"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

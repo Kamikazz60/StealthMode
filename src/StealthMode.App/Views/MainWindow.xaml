@@ -1,0 +1,169 @@
+<Window x:Class="StealthMode.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Stealth Mode" Icon="/Resources/StealthMode.ico" Width="560" Height="680" MinWidth="380" MinHeight="460"
+        Background="{StaticResource Bg}" WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI" TextOptions.TextFormattingMode="Display">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Stealth Mode" FontSize="26" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <Button x:Name="HelpButton" Content="?" Click="HelpButton_Click" Width="30" Height="30" Margin="12,4,0,0"
+                        VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{StaticResource FgDim}"
+                        ToolTip="Aide : description et mode d'emploi" AutomationProperties.Name="Aide">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="b" CornerRadius="15" Background="{StaticResource PanelHover}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="b" Property="Background" Value="{StaticResource Accent}"/></Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Popup x:Name="HelpPopup" PlacementTarget="{Binding ElementName=HelpButton}" Placement="Bottom" StaysOpen="False"
+                       AllowsTransparency="True" PopupAnimation="Fade" HorizontalOffset="-8" VerticalOffset="6">
+                    <Border Background="{StaticResource Panel}" BorderBrush="{StaticResource PanelHover}" BorderThickness="1"
+                            CornerRadius="10" Padding="18" Width="440" MaxHeight="560">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock Text="À propos de Stealth Mode" FontSize="17" FontWeight="SemiBold"/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,8,0,0" LineHeight="20"
+                                           Text="Stealth Mode masque en un instant les fenêtres que vous choisissez, pour laisser votre ordinateur à quelqu'un d'autre sans rien fermer. Les programmes masqués continuent de tourner : un téléchargement, une tâche ou une musique ne s'arrêtent pas. Il peut aussi couper leur son et faire disparaître des icônes du Bureau ou d'un dossier."/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,8,0,0" LineHeight="20" Foreground="{StaticResource FgDim}"
+                                           Text="C'est un outil de confidentialité visuelle, pas de sécurité : il ne verrouille pas Windows et ne cache pas les processus du Gestionnaire des tâches."/>
+
+                                <TextBlock Text="Comment ça marche" FontSize="15" FontWeight="SemiBold" Margin="0,16,0,0"/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,8,0,0" LineHeight="20">
+                                    <Run FontWeight="SemiBold" Text="1. Choisissez : "/><Run Text="cochez dans la liste les fenêtres à masquer. La mention « Sera masquée » confirme celles qui le seront."/>
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" LineHeight="20">
+                                    <Run FontWeight="SemiBold" Text="2. Activez : "/><Run Text="appuyez sur "/><Run Text="{Binding ActivateHint, Mode=OneWay}" Foreground="{StaticResource Accent}"/><Run Text=" ou sur « Activer le mode secret ». Les fenêtres disparaissent de l'écran, de la barre des tâches et d'Alt+Tab, et le son de ces applications est coupé."/>
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" LineHeight="20">
+                                    <Run FontWeight="SemiBold" Text="3. Restaurez : "/><Run Text="appuyez "/><Run Text="{Binding RestoreHint, Mode=OneWay}" Foreground="{StaticResource Accent}"/><Run Text=", ou utilisez « Restaurer les fenêtres » ou l'icône près de l'horloge. Tout revient comme avant."/>
+                                </TextBlock>
+
+                                <TextBlock Text="Pour aller plus loin" FontSize="15" FontWeight="SemiBold" Margin="0,16,0,0"/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,8,0,0" LineHeight="20">
+                                    <Run FontWeight="SemiBold" Text="Profils et règles : "/><Run Text="créez des profils (Personnel, Travail…) avec des règles permanentes. Exemple : toujours masquer VS Code, ou les fenêtres Chrome dont le titre contient « Gmail »."/>
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" LineHeight="20">
+                                    <Run FontWeight="SemiBold" Text="Icônes à mettre de côté : "/><Run Text="dans « Profils… », ajoutez des raccourcis, fichiers ou dossiers (par exemple le raccourci de Stealth Mode sur le Bureau). Ils disparaissent pendant le mode secret, puis reviennent à leur place."/>
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" LineHeight="20">
+                                    <Run FontWeight="SemiBold" Text="Paramètres : "/><Run Text="changez le raccourci, coupez ou non le son, lancez Stealth Mode avec Windows."/>
+                                </TextBlock>
+
+                                <TextBlock Text="En cas de problème" FontSize="15" FontWeight="SemiBold" Margin="0,16,0,0"/>
+                                <TextBlock TextWrapping="Wrap" Margin="0,8,0,0" LineHeight="20"
+                                           Text="Si le programme est arrêté de force pendant le mode secret, les fenêtres restent masquées. Relancez Stealth Mode : il les restaure automatiquement."/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Popup>
+            </StackPanel>
+            <TextBlock Text="{Binding StateText}" Foreground="{StaticResource FgDim}" FontSize="14" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="0,16,0,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox ItemsSource="{Binding Profiles}" SelectedItem="{Binding ActiveProfile}" DisplayMemberPath="Name"
+                          ToolTip="Profil actif"/>
+                <Button Grid.Column="1" Content="Profils…" Command="{Binding OpenProfilesCommand}" Style="{StaticResource SecondaryButton}" Margin="8,0,0,0"/>
+                <Button Grid.Column="2" Content="Paramètres" Command="{Binding OpenSettingsCommand}" Style="{StaticResource SecondaryButton}" Margin="8,0,0,0"/>
+            </Grid>
+            <Grid Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Fenêtres à masquer" FontSize="15" FontWeight="SemiBold"/>
+                    <CheckBox Content="Masquer toutes les fenêtres des applications cochées" IsChecked="{Binding ByApplication}" Margin="0,8,0,0"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="Actualiser" Command="{Binding RefreshCommand}" Style="{StaticResource SecondaryButton}" VerticalAlignment="Top"/>
+            </Grid>
+        </StackPanel>
+
+        <Border Grid.Row="2" Background="{StaticResource Panel}" CornerRadius="10">
+            <ListBox ItemsSource="{Binding Windows}" Background="Transparent" BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Focusable" Value="False"/>
+                        <Setter Property="Padding" Value="0"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="12,10" Background="Transparent">
+                            <Grid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="{Binding ApplicationRuleLabel}" Command="{Binding AddApplicationRuleCommand}"/>
+                                    <MenuItem Header="{Binding WindowRuleLabel}" Command="{Binding AddWindowRuleCommand}"/>
+                                    <Separator/>
+                                    <MenuItem Header="{Binding CustomRuleLabel}" Command="{Binding CreateRuleCommand}"/>
+                                </ContextMenu>
+                            </Grid.ContextMenu>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center">
+                                <CheckBox.LayoutTransform><ScaleTransform ScaleX="1.35" ScaleY="1.35"/></CheckBox.LayoutTransform>
+                            </CheckBox>
+                            <Image Grid.Column="1" Source="{Binding Icon}" Width="24" Height="24" Margin="12,0"/>
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}"/>
+                                <TextBlock Text="{Binding Subtitle}" Foreground="{StaticResource FgDim}" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                            <TextBlock Grid.Column="3" Text="Sera masquée" Foreground="{StaticResource Accent}" FontSize="12"
+                                       VerticalAlignment="Center" Margin="8,0,0,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding WillBeHidden}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <Button Grid.Column="4" Content="Règle…" Command="{Binding CreateRuleCommand}" Style="{StaticResource SecondaryButton}"
+                                    FontSize="12" Padding="10,4" MinHeight="32" Margin="8,0,0,0"
+                                    ToolTip="Créer une règle permanente à partir de cette fenêtre"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <TextBlock Grid.Row="3" Text="{Binding Status}" Foreground="{StaticResource FgDim}" TextWrapping="Wrap" Margin="0,10,0,10"/>
+
+        <StackPanel Grid.Row="4">
+            <Button Content="Activer le mode secret" Command="{Binding ActivateCommand}" Style="{StaticResource PrimaryButton}"/>
+            <Button Content="Restaurer les fenêtres" Command="{Binding RestoreCommand}" Style="{StaticResource SecondaryButton}" Margin="0,8,0,0"/>
+            <TextBlock Foreground="{StaticResource FgDim}" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"
+                       Text="{Binding HotkeyHelpText, Mode=OneWay}"/>
+        </StackPanel>
+    </Grid>
+</Window>
